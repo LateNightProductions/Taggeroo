@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -15,6 +15,7 @@ import com.latenightproductions.taggeroo.injection.component.DaggerTagsComponent
 import com.latenightproductions.taggeroo.injection.module.TagsPresenterModule;
 import com.latenightproductions.taggeroo.ui.base.BaseActivity;
 import com.latenightproductions.taggeroo.ui.base.TaggerooApplication;
+import com.latenightproductions.taggeroo.util.RecyclerItemTapListener;
 
 import java.util.List;
 
@@ -49,17 +50,23 @@ public class TagsActivity extends BaseActivity implements TagsContract.View {
                 .build().inject(this);
 
         recycler.setLayoutManager(new LinearLayoutManager(this));
-        tagsAdapter = new TagsAdapter(this);
+        tagsAdapter = new TagsAdapter(this, presenter);
         recycler.setAdapter(tagsAdapter);
+
+        recycler.addOnItemTouchListener(new RecyclerItemTapListener(this,
+                position ->  {
+                    Tag t = tagsAdapter.getTag(position);
+                    omnibox.setText(t.getText());
+                }));
 
         presenter.loadAllTags();
 
         addButton.setOnClickListener(v -> {
-            Tag tag = new Tag();
-            tag.setId(System.currentTimeMillis());
-            tag.setText(omnibox.getText().toString());
-
-            presenter.createTag(tag);
+            if (TextUtils.isEmpty(omnibox.getText())) {
+                return;
+            }
+            presenter.createTag(omnibox.getText().toString());
+            omnibox.setText("");
         });
     }
 
@@ -70,7 +77,6 @@ public class TagsActivity extends BaseActivity implements TagsContract.View {
 
     @Override
     public void onTagsLoaded(List<Tag> tags) {
-        Log.i("TagsActivity", "Tags are: " + tags);
         tagsAdapter.swapObjects(tags);
     }
 

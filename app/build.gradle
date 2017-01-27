@@ -54,14 +54,6 @@ dependencies {
     compile "com.trello:rxlifecycle:$rootProject.rxLifecycleVersion"
     compile "com.trello:rxlifecycle-components:$rootProject.rxLifecycleVersion"
 
-    // Scanning
-    compile 'com.google.zxing:core:3.3.0'
-    compile 'com.journeyapps:zxing-android-embedded:3.3.0@aar'
-
-    // Butterknife
-    compile "com.jakewharton:butterknife:$rootProject.butterKnifeVersion"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.butterKnifeVersion"
-
     // Dependency Injection
     compile "com.google.dagger:dagger:$rootProject.daggerVersion"
     apt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"

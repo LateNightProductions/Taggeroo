@@ -1,27 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@android:drawable/list_selector_background"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#aaaaaa" />
 
     <TextView
         android:id="@+id/adapter_tags_title"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="8dp"
+        style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Ate dinner"/>
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        tools:text="Ate dinner" />
 
     <TextView
         android:id="@+id/adapter_tags_memo"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="match_parent"
+        android:layout_marginTop="-12dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        tools:text="Had a steak with some mashed potatoes" />
+
+
+    <TextView
+        android:id="@+id/adapter_tags_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Had a steak with some mashed potatoes"/>
+        android:layout_marginTop="-12dp"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        tools:text="10:55 PM, January 27, 2017 " />
+
 
 </LinearLayout>

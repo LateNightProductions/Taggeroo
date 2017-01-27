@@ -16,7 +16,7 @@ public interface TagsContract {
 
     interface Presenter extends BasePresenter {
         void loadAllTags();
-        void createTag(Tag tag);
+        void createTag(String title);
         void updateTag(Tag tag);
     }
 

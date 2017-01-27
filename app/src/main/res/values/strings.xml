@@ -3,4 +3,12 @@
 
 
     <string name="activity_tags_add">Add</string>
+    <string name="activity_tags_added_success">Added %1$s</string>
+
+    <string name="action_set">Set</string>
+    <string name="action_cancel">Cancel</string>
+
+    <string name="dialog_memo_title">Add memo</string>
+    <string name="dialog_memo_hint">Add a memo to %1$s</string>
+
 </resources>

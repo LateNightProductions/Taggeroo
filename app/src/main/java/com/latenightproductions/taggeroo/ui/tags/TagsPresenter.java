@@ -3,16 +3,19 @@ package com.latenightproductions.taggeroo.ui.tags;
 import com.latenightproductions.taggeroo.data.model.Tag;
 import com.latenightproductions.taggeroo.data.service.TagService;
 
+import java.util.Date;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class TagsPresenter implements TagsContract.Presenter {
 
-    TagsContract.View view;
+    private TagsContract.View view;
 
-    TagService tagService;
-    Subscription tagsSubscription;
-    Subscription addTagSubscription;
+    private TagService tagService;
+    private Subscription tagsSubscription;
+    private Subscription addTagSubscription;
+    private Subscription updateSubscription;
 
     public TagsPresenter(TagsContract.View view, TagService tagService) {
         this.view = view;
@@ -31,8 +34,13 @@ public class TagsPresenter implements TagsContract.Presenter {
     }
 
     @Override
-    public void createTag(Tag tag) {
+    public void createTag(String title) {
         unsubscribe(addTagSubscription);
+
+        Tag tag = new Tag();
+        tag.setId(System.currentTimeMillis());
+        tag.setText(title);
+        tag.setTimestamp(new Date());
 
         addTagSubscription = tagService.createTag(tag)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -42,7 +50,12 @@ public class TagsPresenter implements TagsContract.Presenter {
 
     @Override
     public void updateTag(Tag tag) {
+        unsubscribe(updateSubscription);
 
+        updateSubscription = tagService.updateTag(tag)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(updated -> {},
+                        view::onError);
     }
 
     private void unsubscribe(Subscription s) {

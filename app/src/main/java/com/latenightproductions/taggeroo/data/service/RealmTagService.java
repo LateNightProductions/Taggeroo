@@ -5,6 +5,7 @@ import com.latenightproductions.taggeroo.data.model.Tag;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.Sort;
 import io.realm.exceptions.RealmException;
 import rx.Emitter;
 import rx.Observable;
@@ -20,7 +21,7 @@ public class RealmTagService implements TagService {
 
     @Override
     public Observable<List<Tag>> listAllTags() {
-        return realm.where(Tag.class).findAll().asObservable().map(realm::copyFromRealm);
+        return realm.where(Tag.class).findAll().sort("timestamp", Sort.DESCENDING).asObservable().map(realm::copyFromRealm);
     }
 
     @Override
