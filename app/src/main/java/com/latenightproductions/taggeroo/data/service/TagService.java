@@ -8,9 +8,9 @@ import rx.Observable;
 
 public interface TagService {
 
-    Observable<List<Tag>> listAllTags();
-
     Observable<Tag> getTag(long tagId);
+    Observable<List<Tag>> listAllTags();
+    Observable<List<Tag>> searchForTags(Observable<String> query);
 
     Observable<Tag> createTag(Tag tag);
 

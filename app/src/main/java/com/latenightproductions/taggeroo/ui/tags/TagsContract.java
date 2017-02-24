@@ -6,6 +6,8 @@ import com.latenightproductions.taggeroo.ui.base.BaseView;
 
 import java.util.List;
 
+import rx.Observable;
+
 public interface TagsContract {
 
     interface View extends BaseView {
@@ -18,6 +20,7 @@ public interface TagsContract {
         void loadAllTags();
         void createTag(String title);
         void updateTag(Tag tag);
+        void searchForTags(Observable<String> query);
     }
 
 }

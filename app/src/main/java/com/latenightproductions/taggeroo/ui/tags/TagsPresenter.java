@@ -5,6 +5,7 @@ import com.latenightproductions.taggeroo.data.service.TagService;
 
 import java.util.Date;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -16,6 +17,7 @@ public class TagsPresenter implements TagsContract.Presenter {
     private Subscription tagsSubscription;
     private Subscription addTagSubscription;
     private Subscription updateSubscription;
+    private Subscription querySubscription;
 
     public TagsPresenter(TagsContract.View view, TagService tagService) {
         this.view = view;
@@ -58,14 +60,28 @@ public class TagsPresenter implements TagsContract.Presenter {
                         view::onError);
     }
 
+    @Override
+    public void searchForTags(Observable<String> query) {
+        unsubscribe(querySubscription);
+
+        querySubscription = tagService.searchForTags(query.observeOn(AndroidSchedulers.mainThread()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(view::onTagsLoaded,
+                        view::onError);
+    }
+
     private void unsubscribe(Subscription s) {
         if (s != null) {
             s.unsubscribe();
+            s = null;
         }
     }
 
     @Override
     public void onViewDestroyed() {
         unsubscribe(tagsSubscription);
+        unsubscribe(addTagSubscription);
+        unsubscribe(updateSubscription);
+        unsubscribe(querySubscription);
     }
 }

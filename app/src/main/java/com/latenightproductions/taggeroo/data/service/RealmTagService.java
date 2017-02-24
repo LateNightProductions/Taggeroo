@@ -4,6 +4,7 @@ import com.latenightproductions.taggeroo.data.model.Tag;
 
 import java.util.List;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.Sort;
 import io.realm.exceptions.RealmException;
@@ -20,13 +21,29 @@ public class RealmTagService implements TagService {
     }
 
     @Override
-    public Observable<List<Tag>> listAllTags() {
-        return realm.where(Tag.class).findAll().sort("timestamp", Sort.DESCENDING).asObservable().map(realm::copyFromRealm);
+    public Observable<Tag> getTag(long tagId) {
+        return realm.where(Tag.class).equalTo("id", tagId).findAll().first().asObservable();
     }
 
     @Override
-    public Observable<Tag> getTag(long tagId) {
-        return realm.where(Tag.class).equalTo("id", tagId).findAll().first().asObservable();
+    public Observable<List<Tag>> listAllTags() {
+        return realm.where(Tag.class)
+                .findAll()
+                .sort("timestamp", Sort.DESCENDING)
+                .asObservable()
+                .map(realm::copyFromRealm);
+    }
+
+    @Override
+    public Observable<List<Tag>> searchForTags(Observable<String> query) {
+        return query
+                .distinctUntilChanged()
+                .switchMap(queryString ->
+                        realm.where(Tag.class)
+                                .contains("text", queryString, Case.INSENSITIVE)
+                                .findAll()
+                                .sort("timestamp", Sort.DESCENDING)
+                                .asObservable().map(realm::copyFromRealm));
     }
 
     @Override
@@ -49,6 +66,8 @@ public class RealmTagService implements TagService {
                         .deleteFromRealm())
                 .map(delete -> null);
     }
+
+
 
     private Observable<Tag> doAsync(Tag object, Action1<Tag> action1) {
         return Observable.fromEmitter(e -> {

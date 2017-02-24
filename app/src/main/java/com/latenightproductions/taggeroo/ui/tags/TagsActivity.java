@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.latenightproductions.taggeroo.R;
 import com.latenightproductions.taggeroo.data.model.Tag;
 import com.latenightproductions.taggeroo.injection.component.DaggerTagsComponent;
@@ -18,8 +19,11 @@ import com.latenightproductions.taggeroo.ui.base.TaggerooApplication;
 import com.latenightproductions.taggeroo.util.RecyclerItemTapListener;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import rx.subjects.BehaviorSubject;
 
 public class TagsActivity extends BaseActivity implements TagsContract.View {
 
@@ -30,6 +34,7 @@ public class TagsActivity extends BaseActivity implements TagsContract.View {
     Button addButton;
 
     private TagsAdapter tagsAdapter;
+    private BehaviorSubject<String> queryObservable = BehaviorSubject.create();
 
     //================================================================================
     // Lifecycle methods
@@ -59,7 +64,7 @@ public class TagsActivity extends BaseActivity implements TagsContract.View {
                     omnibox.setText(t.getText());
                 }));
 
-        presenter.loadAllTags();
+        presenter.searchForTags(queryObservable);
 
         addButton.setOnClickListener(v -> {
             if (TextUtils.isEmpty(omnibox.getText())) {
@@ -68,6 +73,14 @@ public class TagsActivity extends BaseActivity implements TagsContract.View {
             presenter.createTag(omnibox.getText().toString());
             omnibox.setText("");
         });
+
+        RxTextView.textChanges(omnibox)
+                .debounce(200, TimeUnit.MILLISECONDS)
+                .map(CharSequence::toString)
+                .compose(bindToLifecycle())
+                .subscribe(queryObservable::onNext,
+                        this::onError);
+
     }
 
 
